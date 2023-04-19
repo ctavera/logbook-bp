@@ -59,17 +59,18 @@ public class LogbookConfig {
                 )
                 //The ChunkingSink will split long messages into smaller chunks and will write them individually while delegating to another sink:
                 // .sink(new ChunkingSink(sink, 1000))
-                //paths
+                //paths config
                 .condition(exclude(
                         requestTo("/health"),
                         requestTo("/admin/**"),
                         contentType("application/octet-stream"),
                         header("X-Secret", newHashSet("1", "true")::contains)))
-                //filtering
+                //filtering config
                 .requestFilter(RequestFilters.replaceBody(message -> contentType("audio/*").test(message) ? "mmh mmh mmh mmh" : null))
                 .responseFilter(ResponseFilters.replaceBody(message -> contentType("*/*-stream").test(message) ? "It just keeps going and going..." : null))
                 //Change the response for the message
 //                .responseFilter(ResponseFilters.replaceBody(message -> contentType("application/json").test(message) ? "This is json..." : null))
+                //Info filtering
                 .queryFilter(accessToken())
                 .queryFilter(replaceQuery("password", "<secret>"))
                 .headerFilter(authorization())
